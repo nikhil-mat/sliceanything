@@ -433,7 +433,7 @@ function slice(o, ang){
              txt:(crit?"CRIT ":"")+(combo>1?combo+"× ":"")+"+"+gain, hot:combo>1||crit, crit});
   if(combo===3||combo===5||combo===8||combo>=12)
     banner = { txt: combo+" SLICE COMBO", t:0 };
-  splat(o.x,o.y,o.sp.tint, crit?1.4:1);
+  splat(o.x,o.y,o.sp.tint, crit?1.35:1, ang);
   for(const side of [1,-1]){
     const n = ang + Math.PI/2;
     halves.push({
@@ -448,17 +448,30 @@ function slice(o, ang){
   Audio_.splat();
   shake = Math.min(14, 5+combo);
 }
-// paint a permanent-ish juice stain on the backdrop layer
-function splat(x,y,color,strength){
+// Paint a juice stain on the backdrop layer: a squashed core plus a spray of
+// droplets thrown along the cut, so it reads as a splatter and not as bokeh.
+function splat(x,y,color,strength,ang){
   sctx.save();
-  sctx.globalAlpha = 0.5*strength;
   sctx.fillStyle = color;
-  const n = 5 + Math.floor(Math.random()*5);
-  for(let i=0;i<n;i++){
-    const a=Math.random()*6.283, d=Math.random()*46*strength;
-    const rx=(7+Math.random()*22)*strength, ry=rx*(0.5+Math.random()*0.7);
+  sctx.translate(x,y); sctx.rotate(ang||0);
+  // core: a few overlapping blobs stretched along the blade
+  sctx.globalAlpha = 0.42*strength;
+  for(let i=0;i<4;i++){
+    const d=(Math.random()-0.5)*54*strength;
+    const rx=(16+Math.random()*22)*strength, ry=(5+Math.random()*9)*strength;
     sctx.beginPath();
-    sctx.ellipse(x+Math.cos(a)*d, y+Math.sin(a)*d, rx, ry, Math.random()*3.14, 0, 6.283);
+    sctx.ellipse(d,(Math.random()-0.5)*10, rx, ry, (Math.random()-0.5)*0.5, 0, 6.283);
+    sctx.fill();
+  }
+  // spray: small droplets flung outward, denser near the cut line
+  sctx.globalAlpha = 0.34*strength;
+  const n = 16 + Math.floor(Math.random()*14);
+  for(let i=0;i<n;i++){
+    const along=(Math.random()-0.5)*180*strength;
+    const off=(Math.random()-0.5)*Math.random()*110*strength;
+    const r=(1+Math.random()*4.5)*strength;
+    sctx.beginPath();
+    sctx.ellipse(along, off, r*(1+Math.random()), r, 0, 0, 6.283);
     sctx.fill();
   }
   sctx.restore();
@@ -572,7 +585,7 @@ function render(){
   }
 
   ctx.save();
-  ctx.globalAlpha=0.85;
+  ctx.globalAlpha=0.72;
   ctx.drawImage(stain,0,0,W,H);
   ctx.restore();
 
