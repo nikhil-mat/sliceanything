@@ -1,3 +1,6 @@
 node_modules/
 .wrangler/
 .DS_Store
+test/target.png
+test/*.png
+test/package-lock.json
