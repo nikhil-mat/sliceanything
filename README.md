@@ -1,4 +1,4 @@
-# Ex Ninja
+# Slice Anything
 
 Fruit-ninja style slicing game where you supply the targets. Drop in photos —
 they get launched into the air for you to cut in half.
@@ -32,7 +32,7 @@ npx wrangler dev
 npx wrangler deploy
 ```
 
-Publishes to your Cloudflare account at `exninja.<your-subdomain>.workers.dev`.
+Publishes to your Cloudflare account at `sliceanything.<your-subdomain>.workers.dev`.
 
 ## Tests
 

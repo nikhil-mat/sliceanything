@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Ex Ninja</title>
+<title>Slice Anything</title>
 <meta name="description" content="Fruit-ninja style slicing, except you upload whatever it is you want to slice.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -144,7 +144,7 @@ body{
 <canvas id="stage"></canvas>
 
 <div class="hud">
-  <div class="brand">EX NINJA<small>SLICE YOUR OWN STUFF</small></div>
+  <div class="brand">SLICE ANYTHING<small>UPLOAD IT · SLICE IT</small></div>
   <div class="readout">
     <div class="score" id="score">0</div>
     <div class="meta">
@@ -377,7 +377,7 @@ const G = 1500;
 let objs=[], halves=[], bits=[], pops=[], flash=0, shake=0;
 let score=0, lives=3, combo=0, comboT=0, running=false, spawnT=0.6, elapsed=0;
 let timeScale=1, freezeT=0, banner=null;
-let best = +(localStorage.getItem("exninja.best")||0);
+let best = +(localStorage.getItem("sliceanything.best")||0);
 bestEl.textContent = best;
 
 function drawLives(){
@@ -737,7 +737,7 @@ function start(){
 function gameOver(title, body){
   running=false;
   Audio_.over();
-  if(score>best){ best=score; localStorage.setItem("exninja.best",String(best)); }
+  if(score>best){ best=score; localStorage.setItem("sliceanything.best",String(best)); }
   bestEl.textContent=best;
   ovKicker.textContent="Round over";
   ovTitle.innerHTML = title.replace(/\.$/,"");
@@ -754,7 +754,7 @@ window.addEventListener("keydown",e=>{
 
 renderRoster();
 requestAnimationFrame(frame);
-window.EXNINJA = {
+window.SLICE = {
   start, spawn, cut, pool,
   state:()=>({score,lives,combo,running,timeScale,freezeT,banner:banner&&banner.txt,
               objs:objs.length,halves:halves.length,bits:bits.length}),

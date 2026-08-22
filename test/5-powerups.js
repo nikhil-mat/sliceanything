@@ -3,7 +3,7 @@ const EXEC = require('./chrome');
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const res=[]; const check=(n,ok,d='')=>{res.push(ok);console.log((ok?'PASS':'FAIL')+' — '+n+(d?'  ['+d+']':''));};
 const sliceOne=`async (kind) => {
-  const E=window.EXNINJA; E.spawn(kind);
+  const E=window.SLICE; E.spawn(kind);
   for(let i=0;i<80;i++){
     const t=E.targets().find(o=> kind==='frost' ? o.frost : (kind==='bomb'? o.bomb : (!o.bomb&&!o.frost)));
     if(t && t.y<window.innerHeight-120){ E.cut({x:t.x-160,y:t.y},{x:t.x+160,y:t.y}); return true; }
@@ -21,7 +21,7 @@ const sliceOne=`async (kind) => {
   // freeze power-up
   const fr = await page.evaluate(async (fn) => {
     const slice = eval('('+fn+')');
-    const E=window.EXNINJA; E.start();
+    const E=window.SLICE; E.start();
     const before=E.state();
     const hit=await slice('frost');
     await new Promise(r=>setTimeout(r,80));
@@ -35,13 +35,13 @@ const sliceOne=`async (kind) => {
 
   const thaw = await page.evaluate(async () => {
     await new Promise(r=>setTimeout(r,5200));
-    return window.EXNINJA.state();
+    return window.SLICE.state();
   });
   check('time returns to normal after the freeze', thaw.timeScale===1 && thaw.freezeT<=0, JSON.stringify({t:thaw.timeScale,f:thaw.freezeT.toFixed(2)}));
 
   // a dropped frost orb must not cost a life
   const frostMiss = await page.evaluate(async () => {
-    const E=window.EXNINJA; E.start();
+    const E=window.SLICE; E.start();
     const before=E.state().lives;
     E.spawn('frost');
     await new Promise(r=>setTimeout(r,1900));
@@ -52,7 +52,7 @@ const sliceOne=`async (kind) => {
   // combo banner at 3
   const banner = await page.evaluate(async (fn) => {
     const slice = eval('('+fn+')');
-    const E=window.EXNINJA; E.start();
+    const E=window.SLICE; E.start();
     for(let i=0;i<3;i++) await slice('target');
     return { banner:E.state().banner, combo:E.state().combo };
   }, sliceOne);
@@ -61,7 +61,7 @@ const sliceOne=`async (kind) => {
   // splatter layer actually accumulates pixels
   const stainPixels = await page.evaluate(async (fn) => {
     const slice = eval('('+fn+')');
-    const E=window.EXNINJA; E.start();
+    const E=window.SLICE; E.start();
     const c=document.getElementById('stage');
     for(let i=0;i<4;i++) await slice('target');
     await new Promise(r=>setTimeout(r,3000)); // let halves and particles clear off screen
@@ -73,7 +73,7 @@ const sliceOne=`async (kind) => {
 
   // stains reset between rounds
   const cleared = await page.evaluate(async () => {
-    window.EXNINJA.start();
+    window.SLICE.start();
     await new Promise(r=>setTimeout(r,120));
     const c=document.getElementById('stage');
     const d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;
@@ -85,7 +85,7 @@ const sliceOne=`async (kind) => {
   // criticals fire over many slices and pay double
   const crit = await page.evaluate(async (fn) => {
     const slice = eval('('+fn+')');
-    const E=window.EXNINJA; let crits=0;
+    const E=window.SLICE; let crits=0;
     for(let n=0;n<40;n++){
       E.start();
       const before=E.state().score;

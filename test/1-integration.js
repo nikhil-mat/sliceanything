@@ -14,26 +14,26 @@ function check(name, ok, detail='') { results.push({name, ok, detail}); console.
   await page.goto('http://127.0.0.1:8788/', { waitUntil:'load' });
   await sleep(800);
 
-  check('page loads with title', (await page.title()) === 'Ex Ninja', await page.title());
+  check('page loads with title', (await page.title()) === 'Slice Anything', await page.title());
   check('start overlay visible', await page.isVisible('#overlay'));
   check('canvas sized to window', await page.evaluate(() => stage.width > 0 && stage.height > 0));
-  check('game API exposed', await page.evaluate(() => typeof window.EXNINJA === 'object'));
-  check('default fruit sprites built', await page.evaluate(() => window.EXNINJA.pool().length) === 8);
+  check('game API exposed', await page.evaluate(() => typeof window.SLICE === 'object'));
+  check('default fruit sprites built', await page.evaluate(() => window.SLICE.pool().length) === 8);
   await page.screenshot({ path:'shot-1-start.png' });
 
   // ---- upload path
   await page.setInputFiles('#file', 'target.png');
   await page.waitForFunction(() => document.querySelectorAll('.chip').length === 1, null, { timeout:5000 });
-  check('uploaded image becomes a target', await page.evaluate(() => window.EXNINJA.pool().length) === 1);
+  check('uploaded image becomes a target', await page.evaluate(() => window.SLICE.pool().length) === 1);
   check('roster chip rendered', await page.isVisible('.chip img'));
-  const tint = await page.evaluate(() => window.EXNINJA.pool()[0].tint);
+  const tint = await page.evaluate(() => window.SLICE.pool()[0].tint);
   check('average colour sampled from upload', /^rgb\(\d+,\d+,\d+\)$/.test(tint), tint);
 
   // ---- start game
   await page.click('#startBtn');
   await sleep(300);
   check('overlay hides on start', !(await page.isVisible('#overlay')));
-  check('game running', (await page.evaluate(() => window.EXNINJA.state())).running === true);
+  check('game running', (await page.evaluate(() => window.SLICE.state())).running === true);
 
   // ---- audio actually initialised (WebAudio graph live)
   const audio = await page.evaluate(() => {
@@ -43,9 +43,9 @@ function check(name, ok, detail='') { results.push({name, ok, detail}); console.
   check('WebAudio available', audio);
 
   // ---- swipe to slice
-  await page.evaluate(() => { for (let i=0;i<6;i++) window.EXNINJA.spawn(); });
+  await page.evaluate(() => { for (let i=0;i<6;i++) window.SLICE.spawn(); });
   await sleep(350);
-  const before = await page.evaluate(() => window.EXNINJA.state());
+  const before = await page.evaluate(() => window.SLICE.state());
   for (let s=0; s<14; s++) {
     const y = 260 + (s%5)*70;
     await page.mouse.move(80, y);
@@ -54,18 +54,18 @@ function check(name, ok, detail='') { results.push({name, ok, detail}); console.
     await page.mouse.up();
     await sleep(60);
   }
-  const after = await page.evaluate(() => window.EXNINJA.state());
+  const after = await page.evaluate(() => window.SLICE.state());
   check('swiping the blade scores points', after.score > 0, 'score '+before.score+' -> '+after.score);
   await page.screenshot({ path:'shot-2-play.png' });
 
   // ---- halves are produced and drawn
   const halfTest = await page.evaluate(async () => {
-    const st = () => window.EXNINJA.state();
-    window.EXNINJA.spawn();
+    const st = () => window.SLICE.state();
+    window.SLICE.spawn();
     await new Promise(r => setTimeout(r, 120));
     // slice whatever is on screen through its centre
     const before = st().halves;
-    window.EXNINJA.cut({x:0,y:window.innerHeight/2},{x:window.innerWidth,y:window.innerHeight/2});
+    window.SLICE.cut({x:0,y:window.innerHeight/2},{x:window.innerWidth,y:window.innerHeight/2});
     await new Promise(r => setTimeout(r, 60));
     return { before, after: st().halves };
   });
@@ -83,25 +83,25 @@ function check(name, ok, detail='') { results.push({name, ok, detail}); console.
   // ---- lives / miss handling and game over
   const over = await page.evaluate(async () => {
     const log = [];
-    for (let i=0;i<40 && window.EXNINJA.state().running; i++) {
-      window.EXNINJA.spawn();
+    for (let i=0;i<40 && window.SLICE.state().running; i++) {
+      window.SLICE.spawn();
       await new Promise(r => setTimeout(r, 260));
-      log.push(window.EXNINJA.state().lives);
+      log.push(window.SLICE.state().lives);
     }
-    return { lives: window.EXNINJA.state().lives, running: window.EXNINJA.state().running, log:log.slice(-4) };
+    return { lives: window.SLICE.state().lives, running: window.SLICE.state().running, log:log.slice(-4) };
   });
   check('missed targets cost lives and end the round', over.running === false && over.lives <= 0, JSON.stringify(over));
   await sleep(900);
   check('game-over overlay returns', await page.isVisible('#overlay'));
   const ovText = await page.textContent('#ovBody');
   check('game-over reports the score', /Final score: \d+/.test(ovText), ovText.slice(0,70)+'…');
-  check('best score persisted', await page.evaluate(() => !!localStorage.getItem('exninja.best')));
+  check('best score persisted', await page.evaluate(() => !!localStorage.getItem('sliceanything.best')));
   await page.screenshot({ path:'shot-3-over.png' });
 
   // ---- restart
   await page.click('#startBtn');
   await sleep(200);
-  const restarted = await page.evaluate(() => window.EXNINJA.state());
+  const restarted = await page.evaluate(() => window.SLICE.state());
   check('restart resets score and lives', restarted.running && restarted.score===0 && restarted.lives===3, JSON.stringify(restarted));
 
   // ---- mobile viewport

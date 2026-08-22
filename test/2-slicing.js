@@ -14,7 +14,7 @@ const res=[]; const check=(n,ok,d='')=>{res.push(ok);console.log((ok?'PASS':'FAI
 
   // 1. deterministic slice of a known target -> exactly 2 halves + score + juice
   const slice = await page.evaluate(async () => {
-    const E = window.EXNINJA;
+    const E = window.SLICE;
     const before = E.state();
     E.spawn('target');
     for (let i=0;i<60;i++){ // wait until it is on screen
@@ -39,7 +39,7 @@ const res=[]; const check=(n,ok,d='')=>{res.push(ok);console.log((ok?'PASS':'FAI
   // 2. halves fly apart and expire
   const halvesGone = await page.evaluate(async () => {
     await new Promise(r=>setTimeout(r,3200));
-    return window.EXNINJA.state().halves;
+    return window.SLICE.state().halves;
   });
   check('halves are cleaned up after falling', halvesGone === 0, 'halves='+halvesGone);
 
@@ -47,7 +47,7 @@ const res=[]; const check=(n,ok,d='')=>{res.push(ok);console.log((ok?'PASS':'FAI
 
   // 5. a dropped target costs a life
   const missRes = await page.evaluate(async () => {
-    const E = window.EXNINJA; E.start();
+    const E = window.SLICE; E.start();
     const before = E.state().lives;
     E.spawn('target');
     await new Promise(r=>setTimeout(r,1800));
@@ -57,7 +57,7 @@ const res=[]; const check=(n,ok,d='')=>{res.push(ok);console.log((ok?'PASS':'FAI
 
   // 6. three misses end the round
   const end = await page.evaluate(async () => {
-    const E = window.EXNINJA; E.start();
+    const E = window.SLICE; E.start();
     for (let i=0;i<12 && E.state().running;i++){ E.spawn('target'); await new Promise(r=>setTimeout(r,400)); }
     return E.state();
   });

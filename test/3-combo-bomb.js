@@ -11,7 +11,7 @@ const res=[]; const check=(n,ok,d='')=>{res.push(ok);console.log((ok?'PASS':'FAI
 
   // combo measured at the instant of the slice
   const chain = await page.evaluate(async () => {
-    const E=window.EXNINJA; E.start(); const marks=[]; const start=E.state().score;
+    const E=window.SLICE; E.start(); const marks=[]; const start=E.state().score;
     for(let n=0;n<3;n++){
       E.spawn('target');
       for(let i=0;i<80;i++){
@@ -29,13 +29,13 @@ const res=[]; const check=(n,ok,d='')=>{res.push(ok);console.log((ok?'PASS':'FAI
 
   const decay = await page.evaluate(async () => {
     await new Promise(r=>setTimeout(r,1000));
-    return window.EXNINJA.state().combo;
+    return window.SLICE.state().combo;
   });
   check('combo decays after its window', decay===0, 'combo='+decay);
 
   // isolated bomb: fresh round (elapsed<6 blocks random bombs), single forced bomb
   const bomb = await page.evaluate(async () => {
-    const E=window.EXNINJA; E.start();
+    const E=window.SLICE; E.start();
     const before=E.state().lives;
     E.spawn('bomb');
     for(let i=0;i<80;i++){

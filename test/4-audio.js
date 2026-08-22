@@ -21,7 +21,7 @@ const res=[]; const check=(n,ok,d='')=>{res.push(ok);console.log((ok?'PASS':'FAI
   check('AudioContext created on first interaction', s0.ctx===1, JSON.stringify(s0));
 
   const sliceSound = await page.evaluate(async () => {
-    const E=window.EXNINJA; E.start();
+    const E=window.SLICE; E.start();
     const before={...window.__snd};
     E.spawn('target');
     for(let i=0;i<80;i++){
@@ -45,7 +45,7 @@ const res=[]; const check=(n,ok,d='')=>{res.push(ok);console.log((ok?'PASS':'FAI
   const muted = await page.evaluate(async () => {
     document.getElementById('muteBtn').click();
     const before={...window.__snd};
-    const E=window.EXNINJA;
+    const E=window.SLICE;
     E.spawn('target');
     for(let i=0;i<80;i++){
       const t=E.targets().find(o=>!o.bomb&&o.y<window.innerHeight-120);
@@ -61,7 +61,7 @@ const res=[]; const check=(n,ok,d='')=>{res.push(ok);console.log((ok?'PASS':'FAI
 
   const overSound = await page.evaluate(async () => {
     document.getElementById('muteBtn').click();
-    const E=window.EXNINJA; E.start();
+    const E=window.SLICE; E.start();
     const before={...window.__snd};
     for(let i=0;i<12 && E.state().running;i++){ E.spawn('target'); await new Promise(r=>setTimeout(r,380)); }
     return { oscDelta:window.__snd.osc-before.osc, running:E.state().running };
