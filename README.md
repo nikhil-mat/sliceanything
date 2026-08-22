@@ -10,8 +10,8 @@ they get launched into the air for you to cut in half.
 *Uploading the Mona Lisa and cutting her to pieces —
 [watch the full clip with sound](https://github.com/nikhil-mat/sliceanything/raw/main/media/chopping-monalisa.mp4) (21s).*
 
-`public/index.html` is the entire game: one file, no dependencies, no image or
-audio assets. Hosted on GitHub Pages (`.github/workflows/pages.yml` uploads `public/` on
+`public/index.html` is the entire game: one file, no dependencies, no audio
+assets, and its only image is the Mona Lisa inlined as a data URI. Hosted on GitHub Pages (`.github/workflows/pages.yml` uploads `public/` on
 every push to `main`), and deployable to Cloudflare Workers as a static-assets
 app from the same directory.
 
@@ -45,10 +45,11 @@ Publishes to your Cloudflare account at `sliceanything.<your-subdomain>.workers.
 
 ## Tests
 
-Five Playwright suites (52 checks) drive the real game in Chromium: uploads and
+Six Playwright suites (60 checks) drive the real game in Chromium: uploads and
 roster handling, slicing geometry and half-generation, combo and bomb rules, the
-frost/critical/splatter mechanics, and the audio graph — verified by counting
-oscillator and buffer-source starts, so a silent regression fails the build.
+frost/critical/splatter mechanics, Mona Lisa mode, and the audio graph — verified
+by counting oscillator and buffer-source starts, so a silent regression fails the
+build.
 
 ```
 npx wrangler dev --port 8788          # one shell
