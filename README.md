@@ -1,10 +1,14 @@
 # Slice Anything
 
+**Play it: https://nikhil-mat.github.io/sliceanything/**
+
 Fruit-ninja style slicing game where you supply the targets. Drop in photos —
 they get launched into the air for you to cut in half.
 
 `public/index.html` is the entire game: one file, no dependencies, no image or
-audio assets. Served as a Cloudflare Workers static-assets app.
+audio assets. Hosted on GitHub Pages (`.github/workflows/pages.yml` uploads `public/` on
+every push to `main`), and deployable to Cloudflare Workers as a static-assets
+app from the same directory.
 
 ## Playing
 
