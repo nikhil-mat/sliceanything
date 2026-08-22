@@ -48,3 +48,7 @@ cd test && npm i playwright-core && ./run.sh
 
 `test/chrome.js` finds a browser via `CHROME_PATH`, a cached Playwright build,
 or system Chrome.
+
+`node test/spectrum.js` is a measuring tool rather than a test: it renders the
+slice offline and prints where the energy sits (spectral centroid, peak, share
+above 3 kHz), which is how the blade got tuned away from sounding shrill.
