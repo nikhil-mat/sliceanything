@@ -231,37 +231,17 @@ const Audio_ = {
     f.frequency.exponentialRampToValueAtTime(2600,ac.currentTime+0.2);
     s.connect(f); const t=this.env(f,0.16,0.24); s.start(t); s.stop(t+0.3);
   },
-  // Katana: a noise chiff for the contact, then inharmonic partials ringing
-  // like steel. Kept under 2 kHz and rolled off above that — the ear peaks
-  // around 3-4 kHz, and partials up there turn a blade into an ice pick.
-  // A short low body underneath gives the cut weight instead of pure treble.
   slice(step){
     if(this.muted||!this.ready()) return;
     const ac=this.ac;
-    const k=Math.pow(1.0595,Math.min(step,8)*0.5);   // at most a major third
-    const lp=ac.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=4200;
-    lp.connect(ac.destination);
-
-    const s=this.noise(0.05), bp=ac.createBiquadFilter();
-    bp.type="bandpass"; bp.frequency.value=1700; bp.Q.value=0.9;
-    s.connect(bp); const t=this.env(bp,0.16,0.08); s.start(t); s.stop(t+0.12);
-
-    [[700,0.14,0.30],[1120,0.07,0.36],[1680,0.03,0.20]].forEach(([hz,vol,dur],i)=>{
-      // a little detune per hit so a fast chain never rings identically twice
-      const o=ac.createOscillator(); o.type="sine";
-      o.frequency.value=hz*k*(0.99+Math.random()*0.02);
-      const g=ac.createGain(), t2=ac.currentTime+i*0.004;
-      g.gain.setValueAtTime(0.0001,t2);
-      g.gain.exponentialRampToValueAtTime(vol,t2+0.006);
-      g.gain.exponentialRampToValueAtTime(0.0001,t2+dur);
-      o.connect(g); g.connect(lp);
-      o.start(t2); o.stop(t2+dur+0.1);
-    });
-
-    const b=ac.createOscillator(); b.type="sine";
-    b.frequency.setValueAtTime(190,ac.currentTime);
-    b.frequency.exponentialRampToValueAtTime(120,ac.currentTime+0.1);
-    const tb=this.env(b,0.06,0.10); b.start(tb); b.stop(tb+0.14);
+    const s=this.noise(0.16), f=ac.createBiquadFilter();
+    f.type="highpass"; f.frequency.value=900;
+    s.connect(f); let t=this.env(f,0.3,0.18); s.start(t); s.stop(t+0.2);
+    const o=ac.createOscillator(); o.type="triangle";
+    const base=520*Math.pow(1.0595,Math.min(step,14)*2);
+    o.frequency.setValueAtTime(base,ac.currentTime);
+    o.frequency.exponentialRampToValueAtTime(base*1.6,ac.currentTime+0.12);
+    t=this.env(o,0.16,0.16); o.start(t); o.stop(t+0.2);
   },
   splat(){
     if(this.muted||!this.ready()) return;
