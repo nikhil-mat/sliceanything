@@ -5,6 +5,10 @@
 Fruit-ninja style slicing game where you supply the targets. Drop in photos —
 they get launched into the air for you to cut in half.
 
+https://github.com/nikhil-mat/sliceanything/raw/main/media/chopping-monalisa.mp4
+
+*Uploading the Mona Lisa and cutting her to pieces.*
+
 `public/index.html` is the entire game: one file, no dependencies, no image or
 audio assets. Hosted on GitHub Pages (`.github/workflows/pages.yml` uploads `public/` on
 every push to `main`), and deployable to Cloudflare Workers as a static-assets
